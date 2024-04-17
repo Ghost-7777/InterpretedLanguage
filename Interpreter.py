@@ -1,10 +1,9 @@
-
 import sys
 
-#read arguments
+# Read arguments
 program_filepath = sys.argv[1]
 
-#read file lines
+# Read file lines
 program_lines = []
 with open(program_filepath, "r") as program_file:
     program_lines = [line.strip() for line in program_file.readlines()]
@@ -16,46 +15,42 @@ for line in program_lines:
     parts = line.split(" ")
     opcode = parts[0]
 
-    #check for empty line
+    # Check for empty line
     if opcode == "":
         continue
 
-    #check if its a label 
+    # Check if it's a label
     if opcode.endswith(":"):
         label_tracker[opcode[:-1]] = token_counter
         continue
 
-    #store opcode token
+    # Store opcode token
     program.append(opcode)
     token_counter += 1
 
-    #handle each opcode
+    # Handle each opcode
     if opcode == "PINS":
-        #expect a number
+        # Expect a number
         number = int(parts[1])
         program.append(number)
         token_counter += 1
     elif opcode == "SCORE":
-        #prints and parse string literal
+        # Prints and parse string literal
         string_literal = ' '.join(parts[1:])[1:-1]
         program.append(string_literal)
         token_counter += 1
     elif opcode == "RACK":
-        #read label
+        # Read label
         label = parts[1]
         program.append(label)
         token_counter += 1
-    elif opcode == "AGAIN":
-        #read label
-        label = parts[1]
-        program.append(label)
-        token_counter += 1
+    
 
 class Stack:
-    
+
     def __init__(self, size):
         self.buf = [0 for _ in range(size)]
-        self.sp    = -1
+        self.sp = -1
 
     def push(self, number):
         self.sp += 1
@@ -65,15 +60,15 @@ class Stack:
         number = self.buf[self.sp]
         self.sp -= 1
         return number
-    
+
     def top(self):
         return self.buf[self.sp]
-    
+
 
 pc = 0
 stack = Stack(256)
 
-while program[pc] != "HALT":
+while pc < len(program) and program[pc] != "HALT":
     opcode = program[pc]
     pc += 1
 
@@ -90,7 +85,7 @@ while program[pc] != "HALT":
     elif opcode == "SUB":
         a = stack.pop()
         b = stack.pop()
-        stack.push(b - a)  
+        stack.push(b - a)
     elif opcode == "SCORE":
         value = stack.pop()
         if value == 0:
@@ -98,11 +93,8 @@ while program[pc] != "HALT":
 
         print(value)
     elif opcode == "READ":
-        if program_filepath in ["cat.txt", "helloworld.txt"]:
-            value = input()
-            stack.push(value)
-        elif program_filepath == "multiply.txt":
-            value = input()
+        value = input()
+        if program_filepath == "multiply.txt":
             try:
                 value = int(value)
             except ValueError:
@@ -125,3 +117,13 @@ while program[pc] != "HALT":
             pc = label_tracker[program[pc]]
         else:
             pc += 1
+    elif opcode == "REPEAT":
+        string_to_repeat = input("Enter the word to repeat: ")
+        repeat_count = int(input("Enter how many times to repeat: "))
+
+        for _ in range(repeat_count):
+            print(string_to_repeat)
+    elif opcode == "REVERSE":
+        string_to_reverse = stack.pop() 
+        reversed_string = string_to_reverse[::-1]  
+        print(reversed_string)  
