@@ -13,3 +13,5 @@ Interpreter.py is a stack-based programming language that takes some bowling ide
 | MOVE | Pops from stack and returns it |
 | BALL | Pops 2 from the stack and pushes the sum |
 | HALT | Stops the interpreter after the value or string has been printed |
+| REPEAT | Takes the users input for a string and input for how many times to repeat then repeats the string that many times. |
+| REVERSE | Takes the users input for a string and then reverses the strings characters. |
